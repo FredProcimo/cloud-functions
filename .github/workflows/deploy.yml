@@ -1,0 +1,48 @@
+name: Deploy to Firebase
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deploy to"
+        required: true
+        type: choice
+        options: 
+          - development
+          - qa
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      working-directory: ./functions
+      run: npm ci
+      
+    - name: Build
+      working-directory: ./functions
+      run: npm run build
+
+    - name: Install Firebase CLI
+      run: npm install -g firebase-tools
+
+    - name: Set up Firebase credentials
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" > $HOME/firebase.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase.json" >> $GITHUB_ENV
+
+    - name: Deploy to Firebase using Firebase CLI
+      run: |
+        firebase use ${{ github.event.inputs.environment }}
+        firebase deploy --non-interactive

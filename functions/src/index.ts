@@ -1,5 +1,5 @@
-import { onRequest } from "./api/request";
+import { request, postman } from "./api/request";
 // import { cronjob } from "./api/cronjob";
 
 // Export functions
-export { onRequest };
+export { request, postman };
