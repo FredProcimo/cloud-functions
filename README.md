@@ -19,7 +19,7 @@ npm install
 npm run emulator
 ```
 
-## Deployement
+## Deployment
 
 1. **Go to Github Actions**: You can find the button on the tabs above.
 
